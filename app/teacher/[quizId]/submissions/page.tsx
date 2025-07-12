@@ -54,7 +54,7 @@ export default function TeacherSubmissionsPage() {
     // Send the correct answers to grade all submissions
     axios
       .post(`/api/quiz/check`, { studentAnswers: submissions.map(s => s.answers), correctAnswers })
-      .then((res) => {
+      .then(() => {
         alert('Grading Complete!');
         setGrading(false);
       })
@@ -116,7 +116,7 @@ export default function TeacherSubmissionsPage() {
             </Card>
 
             {/* Submissions Grid */}
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 center md:grid-cols-2">
               {submissions.map((submission, idx) => (
                 <Card key={idx} className="transition-shadow hover:shadow-lg">
                   <CardHeader>

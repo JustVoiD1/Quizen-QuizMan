@@ -129,7 +129,7 @@ export default function SubmissionsPage() {
                     </CardHeader>
                     <CardContent>
                       <p className="text-muted-foreground text-sm mb-4">
-                        {quiz.questions?.length || 0} questions
+                        {quiz.questions?.length || 0} question&#40;s&#41;
                       </p>
                       <div className="text-primary font-medium text-sm">
                         Click to view submissions →

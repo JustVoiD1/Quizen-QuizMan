@@ -54,7 +54,7 @@ export default function StudentDashboard() {
                     <CardContent className="p-6">
                       <h2 className="text-xl font-semibold mb-2">{quiz.title}</h2>
                       <p className="text-muted-foreground text-sm">
-                        {quiz.questions?.length || 0} questions
+                        {quiz.questions?.length || 0} question&#40;s&#41;
                       </p>
                       <div className="mt-4 flex items-center text-primary text-sm font-medium">
                         Start Quiz →
