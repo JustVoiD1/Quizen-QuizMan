@@ -1,6 +1,5 @@
 import { connectMongo } from '@/config/db';
 import Submission from '@/models/Submission';
-import Quiz from '@/models/Quiz';  // To populate quiz titles
 import { NextResponse } from 'next/server';
 
 export async function GET() {

@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function SubmissionsPage() {
-  const [submissions, setSubmissions] = useState<SubmissionType[]>([]);
+//   const [submissions, setSubmissions] = useState<SubmissionType[]>([]);
   const [quizzes, setQuizzes] = useState<QuizType[]>([]);
   const [selectedQuiz, setSelectedQuiz] = useState<SelectedQuizType | null>(null);
   const [quizSubmissions, setQuizSubmissions] = useState<SubmissionType[]>([]);

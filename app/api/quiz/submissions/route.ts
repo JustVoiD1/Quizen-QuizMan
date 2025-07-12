@@ -1,6 +1,5 @@
 import { connectMongo } from '@/config/db';
 import Submission from '@/models/Submission';
-import Quiz from '@/models/Quiz';
 import { NextResponse, NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest) {
