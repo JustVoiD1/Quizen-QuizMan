@@ -50,6 +50,10 @@ export default function CreateQuizPage() {
     e.preventDefault();
     try {
       const currentUser = AuthService.getCurrentUser();
+      if(!currentUser){
+            router.push('/auth/signin');
+            return;
+        }
       const createdBy = currentUser._id;
 
       const res = await axios.post('/api/quiz/create', { title, createdBy, questions });

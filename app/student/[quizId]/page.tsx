@@ -95,7 +95,11 @@ export default function StudentQuizPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     const currentUser = AuthService.getCurrentUser();
-    const studentId = currentUser?._id
+    if(!currentUser){
+            router.push('/auth/signin');
+            return;
+        }
+    const studentId = currentUser._id
     e.preventDefault();
 
     const confirmSubmission = window.confirm("Are you sure you want to submit your answers?")
