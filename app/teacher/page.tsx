@@ -4,9 +4,13 @@ import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import SimpleNavigation from '../components/SimpleNavigation';
+import ProtectedPage from '../components/ProtectedPage';
 
-const Page = () => {
-  return (
+const TeacherDashboard = () => {
+  return (<>
+    <ProtectedPage allowedRole='teacher'>
+    <SimpleNavigation/>
     <div className="flex items-center justify-center min-h-screen bg-background p-6">
       <Card className="w-full max-w-lg">
         <CardHeader>
@@ -27,7 +31,8 @@ const Page = () => {
         </CardContent>
       </Card>
     </div>
-  );
+    </ProtectedPage>
+  </>);
 };
 
-export default Page;
+export default TeacherDashboard;

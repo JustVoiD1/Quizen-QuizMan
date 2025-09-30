@@ -13,6 +13,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import ProtectedPage from '../../components/ProtectedPage';
+import SimpleNavigation from '../../components/SimpleNavigation';
 
 export default function SubmissionsPage() {
 //   const [submissions, setSubmissions] = useState<SubmissionType[]>([]);
@@ -83,14 +85,16 @@ export default function SubmissionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-6xl mx-auto space-y-6">
-        {/* Header */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-3xl text-center">
-              {viewMode === 'quizzes' ? 'Quiz Submissions' : `${selectedQuiz?.title} - Submissions`}
-            </CardTitle>
+    <ProtectedPage allowedRole="teacher">
+      <SimpleNavigation />
+      <div className="min-h-screen bg-background p-6">
+        <div className="max-w-6xl mx-auto space-y-6">
+          {/* Header */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-3xl text-center">
+                {viewMode === 'quizzes' ? 'Quiz Submissions' : `${selectedQuiz?.title} - Submissions`}
+              </CardTitle>
             {viewMode === 'submissions' && (
               <div className="flex justify-center">
                 <Button variant="outline" onClick={goBackToQuizzes}>
@@ -120,9 +124,9 @@ export default function SubmissionsPage() {
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {quizzes.map((quiz) => (
                   <Card
-                    key={quiz._id}
+                    key={quiz._id.toString()}
                     className="cursor-pointer hover:shadow-lg transition-all duration-200 border-2 hover:border-primary/50"
-                    onClick={() => fetchQuizSubmissions(quiz._id, quiz.title)}
+                    onClick={() => fetchQuizSubmissions(quiz._id.toString(), quiz.title)}
                   >
                     <CardHeader>
                       <CardTitle className="text-xl">{quiz.title}</CardTitle>
@@ -154,11 +158,11 @@ export default function SubmissionsPage() {
             ) : (
               <div className="grid gap-6 md:grid-cols-2">
                 {quizSubmissions.map((submission) => {
-                  const isGraded = gradedSubmissions[submission._id];
-                  const isLoading = loadingGrades[submission._id];
+                  const isGraded = gradedSubmissions[submission._id.toString()];
+                  const isLoading = loadingGrades[submission._id.toString()];
                   
                   return (
-                    <Card key={submission._id} className="hover:shadow-lg transition-shadow">
+                    <Card key={submission._id.toString()} className="hover:shadow-lg transition-shadow">
                       <CardHeader>
                         <div className="flex justify-between items-start">
                           <div>
@@ -172,8 +176,8 @@ export default function SubmissionsPage() {
                           
                           <Button
                             onClick={() => checkSubmission(
-                              submission._id, 
-                              typeof submission.quizId === 'object' ? submission.quizId._id : selectedQuiz?.id || ''
+                              submission._id.toString(), 
+                              typeof submission.quizId === 'object' ? submission.quizId._id.toString() : selectedQuiz?.id.toString() || ''
                             )}
                             disabled={isLoading}
                             variant={isGraded ? "secondary" : "default"}
@@ -259,5 +263,6 @@ export default function SubmissionsPage() {
         )}
       </div>
     </div>
+    </ProtectedPage>
   );
 }

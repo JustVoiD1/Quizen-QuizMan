@@ -1,13 +1,20 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
-const questionSchema = new mongoose.Schema({
+
+const questionSchema = new Schema({
   text: { type: String, required: true },
   options: [{ type: String }],
   correctAnswer: { type: Number },
 });
 
-const quizSchema = new mongoose.Schema({
+const quizSchema = new Schema({
   title: { type: String, required: true },
+  description: {type : String},
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref : 'User',
+    required: true
+  },
   questions: [questionSchema],
 });
 

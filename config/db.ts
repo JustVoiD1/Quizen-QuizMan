@@ -16,28 +16,28 @@ if (!cached) {
 }
 
 export async function connectMongo() {
-    if (cached.conn) return cached.conn;
+    // If already connected, return the existing connection
+    if (mongoose.connection.readyState === 1) {
+        return mongoose.connection;
+    }
 
-    //handling duplicate requests by me
-    if (!cached.promise) {
+    // If connecting, wait for it to complete
+    if (mongoose.connection.readyState === 2) {
+        return new Promise((resolve, reject) => {
+            mongoose.connection.once('connected', () => resolve(mongoose.connection));
+            mongoose.connection.once('error', reject);
+        });
+    }
+
+    try {
         const opts = {
-            bufferCommands: true,
-            //how many connections in one gos
-            maxPoolSize: 10
+            bufferCommands: false,
         };
-        cached.promise = mongoose
-            .connect(MONGODB_URI, opts)
-            .then(() => mongoose.connection)
+        
+        await mongoose.connect(MONGODB_URI, opts);
+        return mongoose.connection;
+    } catch (error) {
+        console.error('Database connection error:', error);
+        throw new Error("Database connection failed");
     }
-
-    try{
-        cached.conn = await cached.promise;
-    }
-    catch(e){
-        cached.promise = null;
-        throw new Error("Check database file")
-    }
-
-    return cached.conn;
-
 }

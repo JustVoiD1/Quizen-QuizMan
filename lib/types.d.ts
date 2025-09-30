@@ -1,10 +1,10 @@
-import { Connection } from "mongoose"
+import mongoose, { Connection } from "mongoose"
 
 declare global {
-    var mongoose : {
-        conn: Connection | null,
-        promise: Promise | null
-    }
+  var mongoose: {
+    conn: Connection | null,
+    promise: Promise | null
+  }
 }
 
 export interface QuestionType {
@@ -14,7 +14,8 @@ export interface QuestionType {
 }
 
 export interface QuizType {
-  _id: string;
+  _id: mongoose.Types.ObjectId,
+  createdBy: mongoose.Types.ObjectId
   title: string;
   questions: QuestionType[];
 }
@@ -28,12 +29,14 @@ export interface QuestionResultType {
 }
 
 export interface SubmissionType {
-  _id: string;
+  _id: mongoose.Types.ObjectId,
+
   studentName: string;
   quizId: {
-    _id: string;
+    _id: mongoose.Types.ObjectId;
     title: string;
   } | string;
+  studentId: mongoose.Types.ObjectId
   answers: number[];
 }
 
@@ -51,8 +54,24 @@ export interface GradedSubmissionType {
 }
 
 
+export interface UserType {
+  _id: mongoose.Types.ObjectId,
+  name: string,
+  email: string,
+  password: string,
+  role: 'teacher' | 'student',
+  createdAt: Date,
+  updatedAt: Date,
+}
+
+export interface JWTPayloadType {
+    userId: string,
+    role : 'teacher' | 'student',
+    email : string
+
+}
 
 
 export type ViewModeType = 'quizzes' | 'submissions';
 
-export{};
+export { };

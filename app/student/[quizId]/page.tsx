@@ -11,7 +11,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Skeleton } from '@/components/ui/skeleton';
-
+import ProtectedPage from '@/app/components/ProtectedPage';
+import SimpleNavigation from '@/app/components/SimpleNavigation';
+import { AuthService, User } from '@/lib/auth-simple';
 
 
 export default function StudentQuizPage() {
@@ -21,6 +23,7 @@ export default function StudentQuizPage() {
   const [studentName, setStudentName] = useState('');
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
+  const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -91,98 +94,106 @@ export default function StudentQuizPage() {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const currentUser = AuthService.getCurrentUser();
+    const studentId = currentUser?._id
     e.preventDefault();
 
     const confirmSubmission = window.confirm("Are you sure you want to submit your answers?")
-    if(!confirmSubmission) return;
-    
+    if (!confirmSubmission) return;
+
     try {
       await axios.post('/api/submission/create', {
         quizId,
         studentName,
+        studentId,
         answers,
       });
       alert('Answers submitted successfully!');
       router.push("/student");
 
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('Failed to submit answers.');
+      // Show the specific error message from the server
+      const errorMessage = err.response?.data?.message || 'Failed to submit answers.';
+      alert(errorMessage);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-4xl mx-auto space-y-6">
-        {/* Header */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-3xl text-center">{quiz.title}</CardTitle>
-            <div className="flex justify-center">
-              <Button variant="outline" onClick={() => router.back()}>
-                ← Back to Quizzes
-              </Button>
-            </div>
-          </CardHeader>
-        </Card>
-
-        {/* Quiz Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Student Name */}
+    <ProtectedPage allowedRole="student">
+      <SimpleNavigation />
+      <div className="min-h-screen bg-background p-6">
+        <div className="max-w-4xl mx-auto space-y-6">
+          {/* Header */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-xl">Student Information</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <Label htmlFor="studentName">Your Name</Label>
-                <Input
-                  id="studentName"
-                  placeholder="Enter your name"
-                  value={studentName}
-                  onChange={(e) => setStudentName(e.target.value)}
-                  required
-                />
+              <CardTitle className="text-3xl text-center">{quiz.title}</CardTitle>
+              <div className="flex justify-center">
+                <Button variant="outline" onClick={() => router.back()}>
+                  ← Back to Quizzes
+                </Button>
               </div>
-            </CardContent>
+            </CardHeader>
           </Card>
 
-          {/* Questions */}
-          {quiz.questions.map((q: QuestionType, idx: number) => (
-            <Card key={idx}>
+          {/* Quiz Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Student Name */}
+            <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Question {idx + 1}</CardTitle>
+                <CardTitle className="text-xl">Student Information</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-base font-medium">{q.text}</p>
-                
-                <RadioGroup
-                  value={answers[idx]?.toString() ?? ''}
-                  onValueChange={(val) => handleAnswerChange(idx, parseInt(val))}
-                >
-                  {q.options.map((opt: string, oIdx: number) => (
-                    <div key={oIdx} className="flex items-center space-x-2">
-                      <RadioGroupItem value={oIdx.toString()} id={`q-${idx}-opt-${oIdx}`} />
-                      <Label htmlFor={`q-${idx}-opt-${oIdx}`} className="cursor-pointer">
-                        {opt}
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
+              <CardContent>
+                <div className="space-y-2">
+                  <Label htmlFor="studentName">Your Name</Label>
+                  <Input
+                    id="studentName"
+                    placeholder="Enter your name"
+                    value={studentName}
+                    onChange={(e) => setStudentName(e.target.value)}
+                    required
+                  />
+                </div>
               </CardContent>
             </Card>
-          ))}
 
-          {/* Submit Button */}
-          <Card>
-            <CardContent className="flex justify-center py-6">
-              <Button type="submit" size="lg" className="px-12">
-                Submit Answers
-              </Button>
-            </CardContent>
-          </Card>
-        </form>
+            {/* Questions */}
+            {quiz.questions.map((q: QuestionType, idx: number) => (
+              <Card key={idx}>
+                <CardHeader>
+                  <CardTitle className="text-lg">Question {idx + 1}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-base font-medium">{q.text}</p>
+
+                  <RadioGroup
+                    value={answers[idx]?.toString() ?? ''}
+                    onValueChange={(val) => handleAnswerChange(idx, parseInt(val))}
+                  >
+                    {q.options.map((opt: string, oIdx: number) => (
+                      <div key={oIdx} className="flex items-center space-x-2">
+                        <RadioGroupItem value={oIdx.toString()} id={`q-${idx}-opt-${oIdx}`} />
+                        <Label htmlFor={`q-${idx}-opt-${oIdx}`} className="cursor-pointer">
+                          {opt}
+                        </Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                </CardContent>
+              </Card>
+            ))}
+
+            {/* Submit Button */}
+            <Card>
+              <CardContent className="flex justify-center py-6">
+                <Button type="submit" size="lg" className="px-12">
+                  Submit Answers
+                </Button>
+              </CardContent>
+            </Card>
+          </form>
+        </div>
       </div>
-    </div>
+    </ProtectedPage>
   );
 }

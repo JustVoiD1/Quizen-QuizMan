@@ -2,6 +2,7 @@ import { connectMongo } from '@/config/db';
 import Quiz from '@/models/Quiz';
 import { NextRequest, NextResponse } from 'next/server';
 
+
 export async function GET(req: NextRequest, { params }: { params: Promise<{ quizId: string }> }) {
   try {
     await connectMongo();

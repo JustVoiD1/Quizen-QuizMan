@@ -6,10 +6,11 @@ export async function POST(req: NextRequest) {
   await connectMongo();
   
   try {
-    const { quizId, studentName, answers } = await req.json();
+    const { quizId, studentName, studentId, answers } = await req.json();
 
     const submission = await Submission.create({
       quizId,
+      studentId,
       studentName,
       answers
     });

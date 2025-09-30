@@ -6,6 +6,11 @@ const submissionSchema = new mongoose.Schema({
     ref: 'Quiz',
     required: true
   },
+  studentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required : true
+  },
   studentName: {
     type: String,
     required: true

@@ -7,10 +7,12 @@ export async function POST(req: NextRequest) {
     await connectMongo();
     const body = await req.json();
 
-    const { title, questions } = body;
+    const { title, description, createdBy, questions } = body;
 
     const newQuiz = new Quiz({
       title,
+      description,
+      createdBy,
       questions,
     });
 
